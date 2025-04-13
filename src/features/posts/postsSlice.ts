@@ -1,4 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+
 
 // Define a TS type for the data we'll be using
 export interface Post {
@@ -17,8 +18,16 @@ const initialState: Post[] = [
 const postsSlice = createSlice({
   name: 'posts',
   initialState,
-  reducers: {}
+  reducers: {
+    postAdded(state, action: PayloadAction<Post>) {
+        // "Mutate" the existing state array, which is
+        // safe to do here because `createSlice` uses Immer inside.
+        state.push(action.payload)
+      }
+  }
 })
+
+export const { postAdded } = postsSlice.actions
 
 // Export the generated reducer function
 export default postsSlice.reducer
