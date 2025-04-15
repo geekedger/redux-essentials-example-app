@@ -15,7 +15,7 @@ export const EditPostForm = () => {
   const { postId } = useParams()
 
   const post = useAppSelector(state =>
-    state.posts.find(post => selectPostById(state, postId!))
+    state.posts.posts.find(post => selectPostById(state, postId!))
   )
 
   const dispatch = useAppDispatch()
