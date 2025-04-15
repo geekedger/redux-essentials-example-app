@@ -1,9 +1,10 @@
-import React from 'react'
-
+import React, { useState } from 'react'
+import { addNewPost } from './postsSlice'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { selectAllUsers } from '@/features/users/usersSlice'
-import { type Post, postAdded } from './postsSlice'
+import { type Post } from './postsSlice'
 import { selectCurrentUsername } from '../auth/authSlice'
+
 
 // TS types for the input fields
 // See: https://epicreact.dev/how-to-type-a-react-form-on-submit-handler/
@@ -17,21 +18,35 @@ interface AddPostFormElements extends HTMLFormElement {
 }
 
 export const AddPostForm = () => {
+  const [addRequestStatus, setAddRequestStatus] = useState<'idle' | 'pending'>(
+    'idle'
+  )
     const dispatch = useAppDispatch()
     const userId = useAppSelector(selectCurrentUsername)!
 
     const users = useAppSelector(selectAllUsers)
-  const handleSubmit = (e: React.FormEvent<AddPostFormElements>) => {
-    // Prevent server submission
-    e.preventDefault()
+    const handleSubmit = async (e: React.FormEvent<AddPostFormElements>) => {
+      // Prevent server submission
+      e.preventDefault()
 
     const { elements } = e.currentTarget
     const title = elements.postTitle.value
     const content = elements.postContent.value
+    const form = e.currentTarget
 
+    try {
+      setAddRequestStatus('pending')
+      await dispatch(addNewPost({ title, content, user: userId })).unwrap()
+
+      form.reset()
+    } catch (err) {
+      console.error('Failed to save the post: ', err)
+    } finally {
+      setAddRequestStatus('idle')
+    }
     // Now we can pass these in as separate arguments,
     // and the ID will be generated automatically
-    dispatch(postAdded(title, content, userId))
+
   
     e.currentTarget.reset()
   }
