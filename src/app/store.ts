@@ -3,6 +3,7 @@ import type { Action } from '@reduxjs/toolkit'
 import postsReducer from '@/features/posts/postsSlice'
 import usersReducer from '@/features/users/usersSlice'
 import authReducer from '@/features/auth/authSlice'
+import notificationsReducer from '@/features/notifications/notificationsSlice'
 
 
 interface CounterState {
@@ -18,7 +19,8 @@ export const store = configureStore({
     // Declare that `state.counter` will be updated by the `counterReducer` function
     auth: authReducer,
     posts: postsReducer,
-    users: usersReducer
+    users: usersReducer,
+    notifications: notificationsReducer,
   }
 })
 
