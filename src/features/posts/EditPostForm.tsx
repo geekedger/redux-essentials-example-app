@@ -14,9 +14,7 @@ interface EditPostFormFields extends HTMLFormControlsCollection {
 export const EditPostForm = () => {
   const { postId } = useParams()
 
-  const post = useAppSelector(state =>
-    state.posts.posts.find(post => selectPostById(state, postId!))
-  )
+  const post = useAppSelector(state => selectPostById(state, postId!))
 
   const dispatch = useAppDispatch()
   const navigate = useNavigate()

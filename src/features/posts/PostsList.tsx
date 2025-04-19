@@ -3,18 +3,43 @@ import { PostAuthor } from './PostAuthor'
 import React, { useEffect } from 'react'
 import { useAppSelector, useAppDispatch } from '@/app/hooks'
 import { TimeAgo } from '@/components/TimeAgo'
-import { fetchPosts, Post, selectAllPosts, selectPostsError, selectPostsStatus } from './postsSlice'
+// import { fetchPosts, Post, selectAllPosts, selectPostsError, selectPostsStatus } from './postsSlice'
 import { Spinner } from '@/components/Spinner'
 import { ReactionButtons } from './ReactionButtons'
-
-
+import {
+  fetchPosts,
+  selectPostById,
+  selectPostIds,
+  selectPostsStatus,
+  selectPostsError
+} from './postsSlice'
+import { useSelector } from 'react-redux'
 
 
 interface PostExcerptProps {
-  post: Post
+  postId: string
 }
 
-function PostExcerpt({ post }: PostExcerptProps) {
+// let PostExcerpt = ({ post }: PostExcerptProps) => {
+//   return (
+//     <article className="post-excerpt" key={post.id}>
+//       <h3>
+//         <Link to={`/posts/${post.id}`}>{post.title}</Link>
+//       </h3>
+//       <div>
+//         <PostAuthor userId={post.user} />
+//         <TimeAgo timestamp={post.date} />
+//       </div>
+//       <p className="post-content">{post.content.substring(0, 100)}</p>
+//       <ReactionButtons post={post} />
+//     </article>
+//   )
+// }
+
+// PostExcerpt = React.memo(PostExcerpt)
+
+function PostExcerpt({ postId }: PostExcerptProps) {
+  const post = useAppSelector(state => selectPostById(state, postId))
   return (
     <article className="post-excerpt" key={post.id}>
       <h3>
@@ -29,12 +54,45 @@ function PostExcerpt({ post }: PostExcerptProps) {
     </article>
   )
 }
+
+// let PostExcerpt = React.memo(({ post }: PostExcerptProps): JSX.Element => {
+//   return (
+//     <article className="post-excerpt" key={post.id}>
+//       <h3>
+//         <Link to={`/posts/${post.id}`}>{post.title}</Link>
+//       </h3>
+//       <div>
+//         <PostAuthor userId={post.user} />
+//         <TimeAgo timestamp={post.date} />
+//       </div>
+//       <p className="post-content">{post.content.substring(0, 100)}</p>
+//       <ReactionButtons post={post} />
+//     </article>
+//   )
+// })
+
+// function PostExcerpt({ post }: PostExcerptProps) {
+//   return (
+//     <article className="post-excerpt" key={post.id}>
+//       <h3>
+//         <Link to={`/posts/${post.id}`}>{post.title}</Link>
+//       </h3>
+//       <div>
+//         <PostAuthor userId={post.user} />
+//         <TimeAgo timestamp={post.date} />
+//       </div>
+//       <p className="post-content">{post.content.substring(0, 100)}</p>
+//       <ReactionButtons post={post} />
+//     </article>
+//   )
+// }
 export const PostsList = () => {
   // Select the `state.posts` value from the store into the component
   const dispatch = useAppDispatch()
-  const posts = useAppSelector(selectAllPosts)
+  // const posts = useAppSelector(selectAllPosts)
   const postStatus = useAppSelector(selectPostsStatus)
   const postsError = useAppSelector(selectPostsError)
+  const orderedPostIds = useSelector(selectPostIds)
 
 
   useEffect(() => {
@@ -50,14 +108,10 @@ export const PostsList = () => {
     content = <Spinner text="Loading..." />
   } else if (postStatus === 'succeeded') {
     // Sort posts in reverse chronological order by datetime string
-    const orderedPosts = posts
-      .slice()
-      .sort((a, b) => b.date.localeCompare(a.date))
-
-    content = orderedPosts.map(post => (
-      <PostExcerpt key={post.id} post={post} />
+    content = orderedPostIds.map(postId => (
+      <PostExcerpt key={postId} postId={postId} />
     ))
-  } else if (postStatus === 'failed') {
+  } else if (postStatus === 'rejected') {
     content = <div>{postsError}</div>
   }
 

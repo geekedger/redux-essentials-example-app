@@ -13,6 +13,7 @@ import { NotificationsList } from './features/notifications/NotificationsList'
 import { selectCurrentUsername } from './features/auth/authSlice'
 import { UsersList } from './features/users/UsersList'
 import { UserPage } from './features/users/UserPage'
+import { ToastContainer } from 'react-tiny-toast'
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const username = useAppSelector(selectCurrentUsername)
@@ -43,9 +44,13 @@ function App() {
                   <Route path="/notifications" element={<NotificationsList />} />
                 </Routes>
               </ProtectedRoute>
+              
             }
+            
           />
         </Routes>
+        <ToastContainer />
+
       </div>
     </Router>
   )
