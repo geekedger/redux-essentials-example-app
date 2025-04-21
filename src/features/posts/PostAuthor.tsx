@@ -8,7 +8,7 @@ interface PostAuthorProps {
 }
 
 export const PostAuthor = ({ userId, showPrefix = true }: PostAuthorProps) => {
-  const author = useAppSelector(state => selectUserById(state, userId))
+  const author = useAppSelector((state) => selectUserById(state, userId))
 
   return (
     <span>

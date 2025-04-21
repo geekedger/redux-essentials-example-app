@@ -1,41 +1,18 @@
+import React, { useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { PostAuthor } from './PostAuthor'
-import React, { useEffect, useMemo } from 'react'
-import { useAppSelector, useAppDispatch } from '@/app/hooks'
-import { TimeAgo } from '@/components/TimeAgo'
-import { Spinner } from '@/components/Spinner'
-import { ReactionButtons } from './ReactionButtons'
-import {
-  fetchPosts,
-  selectPostById,
-  selectPostIds,
-  selectPostsStatus,
-  selectPostsError
-} from './postsSlice'
-import { useSelector } from 'react-redux'
-import { useGetPostsQuery, Post } from '@/features/api/apiSlice'
 import classnames from 'classnames'
+
+import { Spinner } from '@/components/Spinner'
+import { TimeAgo } from '@/components/TimeAgo'
+
+import { useGetPostsQuery, Post } from '@/features/api/apiSlice'
+
+import { PostAuthor } from './PostAuthor'
+import { ReactionButtons } from './ReactionButtons'
 
 interface PostExcerptProps {
   post: Post
 }
-// let PostExcerpt = ({ post }: PostExcerptProps) => {
-//   return (
-//     <article className="post-excerpt" key={post.id}>
-//       <h3>
-//         <Link to={`/posts/${post.id}`}>{post.title}</Link>
-//       </h3>
-//       <div>
-//         <PostAuthor userId={post.user} />
-//         <TimeAgo timestamp={post.date} />
-//       </div>
-//       <p className="post-content">{post.content.substring(0, 100)}</p>
-//       <ReactionButtons post={post} />
-//     </article>
-//   )
-// }
-
-// PostExcerpt = React.memo(PostExcerpt)
 
 function PostExcerpt({ post }: PostExcerptProps) {
   return (
@@ -53,68 +30,24 @@ function PostExcerpt({ post }: PostExcerptProps) {
   )
 }
 
-// let PostExcerpt = React.memo(({ post }: PostExcerptProps): JSX.Element => {
-//   return (
-//     <article className="post-excerpt" key={post.id}>
-//       <h3>
-//         <Link to={`/posts/${post.id}`}>{post.title}</Link>
-//       </h3>
-//       <div>
-//         <PostAuthor userId={post.user} />
-//         <TimeAgo timestamp={post.date} />
-//       </div>
-//       <p className="post-content">{post.content.substring(0, 100)}</p>
-//       <ReactionButtons post={post} />
-//     </article>
-//   )
-// })
-
-// function PostExcerpt({ post }: PostExcerptProps) {
-//   return (
-//     <article className="post-excerpt" key={post.id}>
-//       <h3>
-//         <Link to={`/posts/${post.id}`}>{post.title}</Link>
-//       </h3>
-//       <div>
-//         <PostAuthor userId={post.user} />
-//         <TimeAgo timestamp={post.date} />
-//       </div>
-//       <p className="post-content">{post.content.substring(0, 100)}</p>
-//       <ReactionButtons post={post} />
-//     </article>
-//   )
-// }
 export const PostsList = () => {
-  // Calling the `useGetPostsQuery()` hook automatically fetches data!
-  const {
-    data: posts = [],
-    isLoading,
-    isSuccess,
-    isFetching,
-    isError,
-    error,
-    refetch
-  } = useGetPostsQuery()
+  const { data: posts = [], isLoading, isFetching, isSuccess, isError, error } = useGetPostsQuery()
 
   const sortedPosts = useMemo(() => {
     const sortedPosts = posts.slice()
-    // Sort posts in descending chronological order
     sortedPosts.sort((a, b) => b.date.localeCompare(a.date))
     return sortedPosts
   }, [posts])
 
   let content: React.ReactNode
 
-  // Show loading states based on the hook status flags
   if (isLoading) {
     content = <Spinner text="Loading..." />
   } else if (isSuccess) {
-    const renderedPosts = sortedPosts.map(post => (
-      <PostExcerpt key={post.id} post={post} />
-    ))
+    const renderedPosts = sortedPosts.map((post) => <PostExcerpt key={post.id} post={post} />)
 
     const containerClassname = classnames('posts-container', {
-      disabled: isFetching
+      disabled: isFetching,
     })
 
     content = <div className={containerClassname}>{renderedPosts}</div>
@@ -125,8 +58,6 @@ export const PostsList = () => {
   return (
     <section className="posts-list">
       <h2>Posts</h2>
-      <button onClick={refetch}>Refetch Posts</button>
-
       {content}
     </section>
   )

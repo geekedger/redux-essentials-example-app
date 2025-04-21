@@ -1,23 +1,26 @@
 import { Link, useParams } from 'react-router-dom'
+
 import { useAppSelector } from '@/app/hooks'
-import { selectPostById } from './postsSlice'
-import { PostAuthor } from './PostAuthor'
-import { selectCurrentUsername } from '@/features/auth/authSlice'
+
 import { TimeAgo } from '@/components/TimeAgo'
-import { ReactionButtons } from './ReactionButtons'
-import { useGetPostQuery } from '@/features/api/apiSlice'
 import { Spinner } from '@/components/Spinner'
 
+import { useGetPostQuery } from '@/features/api/apiSlice'
+import { selectCurrentUsername } from '@/features/auth/authSlice'
+
+import { PostAuthor } from './PostAuthor'
+import { ReactionButtons } from './ReactionButtons'
 
 export const SinglePostPage = () => {
   const { postId } = useParams()
 
-  const currentUsername = useAppSelector(selectCurrentUsername)!
   const { data: post, isFetching, isSuccess } = useGetPostQuery(postId!)
+  const currentUsername = useAppSelector(selectCurrentUsername)!
 
   let content: React.ReactNode
 
   const canEdit = currentUsername === post?.user
+
   if (isFetching) {
     content = <Spinner text="Loading..." />
   } else if (isSuccess) {
