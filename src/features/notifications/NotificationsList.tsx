@@ -19,14 +19,19 @@ export const NotificationsList = () => {
 
   const renderedNotifications = notifications.map((notification) => {
     const metadata = notificationsMetadata[notification.id]
-    const notificationClassname = classnames('notification', {
-      new: metadata.isNew,
-    })
+
+    const notificationClassname = classnames(
+      'border border-gray-200 p-3 text-sm',
+      {
+        'bg-blue-50': metadata.isNew,
+        'bg-white': !metadata.isNew
+      }
+    )
 
     return (
       <div key={notification.id} className={notificationClassname}>
-        <div>
-          <b>
+        <div className="mb-1">
+          <b className="font-semibold">
             <PostAuthor userId={notification.user} showPrefix={false} />
           </b>{' '}
           {notification.message}
@@ -37,9 +42,9 @@ export const NotificationsList = () => {
   })
 
   return (
-    <section className="notificationsList">
-      <h2>Notifications</h2>
-      {renderedNotifications}
+    <section className="max-w-screen-lg mx-auto px-6 py-4">
+      <h2 className="text-xl font-bold mb-4">Notifications</h2>
+      <div className="space-y-2">{renderedNotifications}</div>
     </section>
   )
 }

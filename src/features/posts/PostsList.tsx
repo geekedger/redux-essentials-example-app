@@ -16,15 +16,17 @@ interface PostExcerptProps {
 
 function PostExcerpt({ post }: PostExcerptProps) {
   return (
-    <article className="post-excerpt" key={post.id}>
-      <h3>
-        <Link to={`/posts/${post.id}`}>{post.title}</Link>
+    <article className="border border-gray-300 rounded-md p-4">
+      <h3 className="text-xl font-semibold mb-1">
+        <Link to={`/posts/${post.id}`} className="text-blue-700 hover:underline">
+          {post.title}
+        </Link>
       </h3>
-      <div>
+      <div className="text-sm text-gray-600 mb-2 flex flex-wrap gap-2">
         <PostAuthor userId={post.user} />
         <TimeAgo timestamp={post.date} />
       </div>
-      <p className="post-content">{post.content.substring(0, 100)}</p>
+      <p className="text-base mb-3">{post.content.substring(0, 100)}</p>
       <ReactionButtons post={post} />
     </article>
   )
@@ -34,9 +36,9 @@ export const PostsList = () => {
   const { data: posts = [], isLoading, isFetching, isSuccess, isError, error } = useGetPostsQuery()
 
   const sortedPosts = useMemo(() => {
-    const sortedPosts = posts.slice()
-    sortedPosts.sort((a, b) => b.date.localeCompare(a.date))
-    return sortedPosts
+    const sorted = posts.slice()
+    sorted.sort((a, b) => b.date.localeCompare(a.date))
+    return sorted
   }, [posts])
 
   let content: React.ReactNode
@@ -46,18 +48,18 @@ export const PostsList = () => {
   } else if (isSuccess) {
     const renderedPosts = sortedPosts.map((post) => <PostExcerpt key={post.id} post={post} />)
 
-    const containerClassname = classnames('posts-container', {
-      disabled: isFetching,
+    const containerClassname = classnames('grid gap-4', {
+      'opacity-50 pointer-events-none': isFetching,
     })
 
     content = <div className={containerClassname}>{renderedPosts}</div>
   } else if (isError) {
-    content = <div>{error.toString()}</div>
+    content = <div className="text-red-600">{(error as Error).toString()}</div>
   }
 
   return (
-    <section className="posts-list">
-      <h2>Posts</h2>
+    <section className="max-w-screen-lg mx-auto px-4 py-6">
+      <h2 className="text-3xl font-bold mb-6">Posts</h2>
       {content}
     </section>
   )

@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom'
 
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 
@@ -11,6 +10,8 @@ import {
 import { selectCurrentUser } from '@/features/users/usersSlice'
 
 import { UserIcon } from './UserIcon'
+import NavLink from './NavLink'
+import SmallButton from './SmallButton'
 
 export const Navbar = () => {
   const dispatch = useAppDispatch()
@@ -37,34 +38,34 @@ export const Navbar = () => {
     let unreadNotificationsBadge: React.ReactNode | undefined
 
     if (numUnreadNotifications > 0) {
-      unreadNotificationsBadge = <span className="badge">{numUnreadNotifications}</span>
+      unreadNotificationsBadge = <span className="badge inline-block px-sm py-1 text-badge font-bold leading-tight text-center whitespace-nowrap align-baseline rounded-badge bg-background ml-3xl relative">{numUnreadNotifications}</span>
     }
 
     navContent = (
-      <div className="navContent">
-        <div className="navLinks">
-          <Link to="/posts">Posts</Link>
-          <Link to="/users">Users</Link>
-          <Link to="/notifications">Notifications {unreadNotificationsBadge}</Link>
-          <button className="button small" onClick={fetchNewNotifications}>
+      <div className="navContent flex flex-wrap justify-between">
+        <div className="navLinks flex ">
+          <NavLink to="/posts"className="first:-ml-3xl">Posts</NavLink>
+          <NavLink to="/users">Users</NavLink>
+          <NavLink to="/notifications">Notifications {unreadNotificationsBadge}</NavLink>
+          <SmallButton  onClick={fetchNewNotifications}>
             Refresh Notifications
-          </button>
+          </SmallButton>
         </div>
-        <div className="userDetails">
+        <div className="userDetails flex items-center">
           <UserIcon size={32} />
           {user.name}
-          <button className="button small" onClick={onLogoutClicked}>
-            Log Out
-          </button>
+          <SmallButton onClick={onLogoutClicked}>
+            Log Out-
+          </SmallButton>
         </div>
       </div>
     )
   }
 
   return (
-    <nav>
-      <section>
-        <h1>Redux Essentials Example</h1>
+    <nav className="flex p-0 bg-redux">
+      <section className="w-full text-white">
+        <h1 className="my-md">Redux Essentials Example</h1>
         {navContent}
       </section>
     </nav>
